@@ -18,7 +18,7 @@ struct MineView: View {
         NavigationStack{
             ScrollView{
                 VStack(spacing: 0){
-                    LazyImage(url: URL(string: "https://icemono.oss-cn-hangzhou.aliyuncs.com/images/denis-istomin-kaspa2.jpg")){ state in
+                    LazyImage(url: URL(string: "https://example.com/coffee-background.jpg")){ state in
                         state.image?
                             .resizable()
                             .scaledToFill()
@@ -27,8 +27,50 @@ struct MineView: View {
                     .frame(height: 400)
                     .padding(.top, -80)
 
+                    VStack(alignment: .leading, spacing: 20) {
+                        Text("Coffee Enthusiast Profile")
+                            .font(.title)
+                            .fontWeight(.bold)
+
+                        HStack {
+                            Image(systemName: "person.circle.fill")
+                                .resizable()
+                                .frame(width: 50, height: 50)
+                            VStack(alignment: .leading) {
+                                Text(modelData.user?.name ?? "Coffee Lover")
+                                    .font(.headline)
+                                Text(modelData.user?.mail ?? "coffee@example.com")
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+
+                        Divider()
+
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("Coffee Stats")
+                                .font(.headline)
+                            HStack {
+                                Stat(title: "Coffees Tried", value: "\(modelData.coffeeList.count)")
+                                Stat(title: "Favorite Roast", value: "Medium")
+                                Stat(title: "Brewing Method", value: "Pour Over")
+                            }
+                        }
+
+                        Divider()
+
+                        NavigationLink(destination: CoffeeListView()) {
+                            Text("My Coffee Collection")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.brown)
+                                .cornerRadius(10)
+                        }
+                    }
+                    .padding()
                 }
-                
             }
             .ignoresSafeArea(.all)
             .toolbar{
@@ -50,6 +92,22 @@ struct MineView: View {
     }
 }
 
+struct Stat: View {
+    let title: String
+    let value: String
+    
+    var body: some View {
+        VStack {
+            Text(value)
+                .font(.title2)
+                .fontWeight(.bold)
+            Text(title)
+                .font(.caption)
+                .foregroundColor(.secondary)
+        }
+        .frame(maxWidth: .infinity)
+    }
+}
 
 #Preview {
     let modelData = ModelData()

@@ -1,5 +1,5 @@
 //
-//  DeletePetVM.swift
+//  DeleteCoffeeVM.swift
 //  mymx
 //
 //  Created by ice on 2024/8/3.
@@ -8,30 +8,28 @@
 import Foundation
 import Alamofire
 
-class DeletePetVM: ObservableObject{
+class DeleteCoffeeVM: ObservableObject{
 
-    func deletePet(petId: Int){
-        print("deletePet")
+    func deleteCoffee(coffeeId: Int){
+        print("deleteCoffee")
         let headers: HTTPHeaders = [
             "Authentication": "Bearer " + GlobalParams.token
         ]
         let parameters: [String: Any] = [
-            "petId": petId
+            "coffeeId": coffeeId
         ]
-        AF.request(Urls.DELETE_PET, method: .post, parameters: parameters, headers: headers)
+        AF.request(Urls.DELETE_COFFEE, method: .post, parameters: parameters, headers: headers)
             .validate()
             .responseDecodable(of: BaseResult<Bool>.self) {response in
                 switch response.result{
                 case .success(let res):
                     print(res)
                     if(res.data!){
-                        print("delete pet succeed: \(petId)")
+                        print("delete coffee succeed: \(coffeeId)")
                     }
                 case .failure(let error):
                     print(error)
                 }
-                // 错误在这里
             }
     }
-    
 }

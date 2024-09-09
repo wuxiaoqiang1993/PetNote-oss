@@ -10,7 +10,7 @@ import NukeUI
 
 enum Tab {
     case home
-    case note
+    case coffeeList
     case add
     case community
     case mine
@@ -23,13 +23,13 @@ struct ContentView: View {
     @StateObject private var photoVM = PhotographVM()
     @StateObject private var weatherVM = WeatherVM()
     @StateObject private var factsVM = FactsVM()
-    @StateObject private var noteVM = NoteVM()
-    @StateObject private var addNoteVM = AddNoteVM()
+    @StateObject private var coffeeListVM = CoffeeListVM()
+    @StateObject private var addCoffeeVM = AddCoffeeVM()
     @StateObject private var shopVM = ShopVM()
     
     @State private var isLoggedIn: Bool = false
     @State private var selection: Tab = .home
-    @State private var showAddNote = false
+    @State private var showAddCoffee = false
     @State private var joinRanking = 0
     
     var body: some View {
@@ -39,7 +39,7 @@ struct ContentView: View {
                     print("network is connected: \(networkMonitor.isConnected)")
                     if(networkMonitor.isConnected){
                         factsVM.nextFact()
-                        modelData.getPetList()
+                        modelData.getCoffeeList()
 
                         if(photoVM.photoList.isEmpty){
                             photoVM.fetchFirst()
@@ -53,8 +53,8 @@ struct ContentView: View {
             TabView(selection: $selection, content: {
                 CardHome(weatherVM: weatherVM, factsVM: factsVM, photoVM: photoVM)
                     .tag(Tab.home)
-                NoteView(viewModel: noteVM)
-                    .tag(Tab.note)
+                CoffeeListView(viewModel: coffeeListVM)
+                    .tag(Tab.coffeeList)
                 EmptyView()
                     .tag(Tab.add)
                 CommunityView(shopVM: shopVM)
@@ -64,49 +64,49 @@ struct ContentView: View {
             })
             
             VStack{
-                if addNoteVM.loading || addNoteVM.progress == 1 || !addNoteVM.errorMsg.isEmpty{
+                if addCoffeeVM.loading || addCoffeeVM.progress == 1 || !addCoffeeVM.errorMsg.isEmpty{
                     VStack{
                         HStack{
-                            if(addNoteVM.imageList.count > 0){
-                                Image(uiImage: addNoteVM.imageList[0])
+                            if(addCoffeeVM.imageList.count > 0){
+                                Image(uiImage: addCoffeeVM.imageList[0])
                                     .resizable()
                                     .scaledToFill()
                                     .frame(width: 48, height: 48)
                                     .clipped()
                             }
-                            if addNoteVM.progress == 1{
-                                Text("发布成功！🎉 ")
+                            if addCoffeeVM.progress == 1{
+                                Text("添加成功！🎉 ")
                                 Spacer()
                                 Button("好的", action: {
                                     withAnimation{
-                                        addNoteVM.cancel()
+                                        addCoffeeVM.cancel()
                                     }
-                                    if(selection == .note){
-                                        noteVM.getNoteList()
+                                    if(selection == .coffeeList){
+                                        coffeeListVM.getCoffeeList()
                                     }else{
-                                        GlobalParams.updateNote = true
+                                        GlobalParams.updateCoffee = true
                                     }
                                 })
-                            }else if !addNoteVM.errorMsg.isEmpty{
-                                Text(addNoteVM.errorMsg)
+                            }else if !addCoffeeVM.errorMsg.isEmpty{
+                                Text(addCoffeeVM.errorMsg)
                                     .foregroundStyle(.red)
                                 Spacer()
                                 Button("取消", action: {
                                     withAnimation{
-                                        addNoteVM.cancel()
+                                        addCoffeeVM.cancel()
                                     }
                                 })
                                 .padding(.trailing)
                                 Button("重试", action: {
-                                    showAddNote = true
+                                    showAddCoffee = true
                                 })
                             } else {
-                                Text(addNoteVM.imageList.count > 0 ? "图片上传中，请稍作等待..." : "动态发布中...")
+                                Text(addCoffeeVM.imageList.count > 0 ? "图片上传中，请稍作等待..." : "咖啡添加中...")
                                 Spacer()
                             }
                         }
                         .padding(.horizontal)
-                        ProgressView(value: addNoteVM.progress)
+                        ProgressView(value: addCoffeeVM.progress)
                             .progressViewStyle(.linear)
                             .tint(Color(hex: "B4E380"))
                     }
@@ -124,15 +124,15 @@ struct ContentView: View {
                                 if let rank = modelData.user?.joinRanking{
                                     self.joinRanking = rank
                                 }
-                                modelData.getPetList()
-                                if(selection == .note){
-                                    noteVM.getNoteList()
+                                modelData.getCoffeeList()
+                                if(selection == .coffeeList){
+                                    coffeeListVM.getCoffeeList()
                                 }
                             }
                         }
                 }
                 Spacer()
-                MyTabView(active: $selection, showAddNote: $showAddNote)
+                MyTabView(active: $selection, showAddCoffee: $showAddCoffee)
                     .background(.clear)
                     .contentShape(.rect)
                     .onTapGesture {
@@ -145,14 +145,14 @@ struct ContentView: View {
                     .transition(.opacity)
             }
         }
-        .fullScreenCover(isPresented: $showAddNote, content: {
-            AddNoteView(showAddNote:$showAddNote, viewModel: addNoteVM)
+        .fullScreenCover(isPresented: $showAddCoffee, content: {
+            AddCoffeeView(showAddCoffee:$showAddCoffee, viewModel: addCoffeeVM)
                 .environmentObject(modelData)
         })
         .onAppear(perform: {
             print("ContentView onAppear")
-            if(modelData.petList.isEmpty){
-                modelData.getPetList()
+            if(modelData.coffeeList.isEmpty){
+                modelData.getCoffeeList()
             }
         })
     }
@@ -162,7 +162,7 @@ struct MyTabView: View {
     @EnvironmentObject var modelData: ModelData
     
     @Binding var active: Tab
-    @Binding var showAddNote: Bool
+    @Binding var showAddCoffee: Bool
     
     var body: some View {
         LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 5), spacing: 0) {
@@ -185,15 +185,15 @@ struct MyTabView: View {
                 .foregroundStyle(.clear)
                 .contentShape(.rect)
                 .overlay{
-                    Text("爱宠说")
-                        .font(active == .note ? .title3 : .body)
+                    Text("咖啡列表")
+                        .font(active == .coffeeList ? .title3 : .body)
                         .fontWeight(.black)
-                        .foregroundStyle(active == .note ? .primary : .secondary)
+                        .foregroundStyle(active == .coffeeList ? .primary : .secondary)
                         .padding(.vertical, 4)
                 }
                 .onTapGesture {
                     withAnimation{
-                        active = .note
+                        active = .coffeeList
                     }
                 }
             Rectangle()
@@ -201,13 +201,13 @@ struct MyTabView: View {
                 .contentShape(.rect)
                 .overlay{
                     Button(action: {
-                        print("add Note")
+                        print("add Coffee")
                         if(modelData.user == nil){
                             withAnimation{
-                                active = .note
+                                active = .coffeeList
                             }
                         }else{
-                            self.showAddNote = true
+                            self.showAddCoffee = true
                         }
                     }){
                         Image(systemName: "plus")
@@ -259,7 +259,6 @@ struct MyTabView: View {
         }
     }
 }
-
 
 #Preview {
     let modelData = ModelData()

@@ -2,35 +2,32 @@
 //  Urls.swift
 //  mymx
 //
-//  Created by ice on 2024/6/27.
+//  Created by ice on 2024/6/17.
 //
 
 import Foundation
 
-class Urls{
-    private static let BASE_PUB_URL = "https://mymx-oss-pub-kkxdbyqfnl.cn-hangzhou.fcapp.run/"
-    private static let BASE_URL = "https://mymx-oss-zihhjvkadm.cn-hangzhou.fcapp.run/api/"
-    private static let BASE_STS_URL = "https://mymx-oss-zihhjvkadm.cn-hangzhou.fcapp.run/sts/"
+struct Urls {
+    static let BASE_URL = "https://your-api-base-url.com/api"
     
-    static let CAT_FACT = "https://zzz.pet:3000/cat-fact"
-
-    static let POETRY_WAETHER = BASE_PUB_URL + "poetryWeather"
-    static let GET_RANDOM_IMAGE = BASE_PUB_URL + "getRandomImage"
+    // Authentication
+    static let LOGIN = BASE_URL + "/auth/login"
+    static let GET_AUTH_CODE = BASE_URL + "/auth/getAuthCode"
     
-    static let GET_AUTH_CODE = BASE_PUB_URL + "getAuthCode"
-    static let LOGIN = BASE_PUB_URL + "login"
+    // Coffee endpoints
+    static let GET_COFFEE_LIST = BASE_URL + "/coffee/list"
+    static let ADD_COFFEE = BASE_URL + "/coffee/add"
+    static let UPDATE_COFFEE = BASE_URL + "/coffee/update"
+    static let DELETE_COFFEE = BASE_URL + "/coffee/delete"
     
-    static let STS_PET_AVATAR = BASE_STS_URL + "stsPetAvatar"
-    static let STS_PET_NOTE = BASE_STS_URL + "stsPetNote"
+    // User related
+    static let UPDATE_USER_INFO = BASE_URL + "/user/update"
     
-    static let ADD_PET = BASE_URL + "addPet"
-    static let UPDATE_PET = BASE_URL + "updatePet"
-    static let DELETE_PET = BASE_URL + "deletePet"
-
-    static let ADD_NOTE = BASE_URL + "addNote"
-    static let GET_PET_LIST = BASE_URL + "getPetList"
-    static let GET_NOTE_LIST = BASE_URL + "getNoteList"
+    // Image upload
+    static let STS_COFFEE_IMAGE = BASE_URL + "/sts/coffeeImage"
     
-    static let DELETE_NOTE = BASE_URL + "deleteNote"
-
+    // Other endpoints (if needed)
+    static let POETRY_WAETHER = BASE_URL + "/poetry/weather"
+    static let CAT_FACT = "https://catfact.ninja/fact"
+    static let GET_RANDOM_IMAGE = BASE_URL + "/image/random"
 }

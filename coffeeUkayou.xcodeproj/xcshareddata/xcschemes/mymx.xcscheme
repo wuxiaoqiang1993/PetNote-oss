@@ -18,7 +18,7 @@
                BlueprintIdentifier = "581162AF2C2075F800A0B708"
                BuildableName = "mymx.app"
                BlueprintName = "mymx"
-               ReferencedContainer = "container:mymx-oss.xcodeproj">
+               ReferencedContainer = "container:coffeeUkayou.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -47,7 +47,7 @@
             BlueprintIdentifier = "581162AF2C2075F800A0B708"
             BuildableName = "mymx.app"
             BlueprintName = "mymx"
-            ReferencedContainer = "container:mymx-oss.xcodeproj">
+            ReferencedContainer = "container:coffeeUkayou.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <EnvironmentVariables>
@@ -70,7 +70,7 @@
             BlueprintIdentifier = "581162AF2C2075F800A0B708"
             BuildableName = "mymx.app"
             BlueprintName = "mymx"
-            ReferencedContainer = "container:mymx-oss.xcodeproj">
+            ReferencedContainer = "container:coffeeUkayou.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

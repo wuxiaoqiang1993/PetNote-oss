@@ -1,5 +1,5 @@
 //
-//  PetList.swift
+//  CoffeeListView.swift
 //  mymx
 //
 //  Created by ice on 2024/7/14.
@@ -8,19 +8,19 @@
 import SwiftUI
 import NukeUI
 
-struct PetListView: View {
+struct CoffeeListView: View {
     @EnvironmentObject var modelData: ModelData
     
-    @StateObject private var viewModel = DeletePetVM()
+    @StateObject private var viewModel = DeleteCoffeeVM()
     @State private var showDelete = false
-    @State private var deletePet = PetModel()
+    @State private var deleteCoffee = CoffeeModel()
     
     var body: some View {
             ScrollView{
                 LazyVStack{
-                    ForEach(modelData.petList){ pet in
+                    ForEach(modelData.coffeeList){ coffee in
                         HStack(spacing: 0){
-                            LazyImage(url: URL(string: pet.avatar)){ state in
+                            LazyImage(url: URL(string: coffee.imageUrl)){ state in
                                 state.image?
                                     .resizable()
                                     .scaledToFill()
@@ -30,48 +30,48 @@ struct PetListView: View {
                             .padding(.trailing)
                             VStack(alignment: .leading){
                                 HStack{
-                                    Text(pet.name)
+                                    Text(coffee.name)
                                         .font(.title)
                                         .foregroundStyle(.primary)
                                     
-                                    Text(FamilyModel.getModel(pet.family).cn)
+                                    Text(CoffeeTypeModel.getModel(coffee.type).cn)
                                     
-                                    Text(GenderModel.getModel(Gender(rawValue: pet.gender) ?? .unknown).cn)
+                                    Text(RoastLevelModel.getModel(RoastLevel(rawValue: coffee.roastLevel) ?? .medium).cn)
                                 }
-                                Text(pet.birthDate, format: .dateTime.day().month().year())
-                                Text(pet.description)
+                                Text("¥\(String(format: "%.2f", coffee.price))")
+                                Text(coffee.description)
                             }
                             .foregroundStyle(.secondary)
                             Spacer(minLength: 0)
                             VStack(spacing: 16){
                                 
                                 Button(action: {
-                                    deletePet = pet
+                                    deleteCoffee = coffee
                                     showDelete = true
                                 }, label: {
                                     Label("删除", systemImage: "trash")
                                 })
                                 .foregroundStyle(.red)
-                                .alert("是否删除 \(deletePet.name) ?", isPresented: $showDelete, actions: {
+                                .alert("是否删除 \(deleteCoffee.name) ?", isPresented: $showDelete, actions: {
                                     Button("取消", role: .cancel, action: {
-                                        self.deletePet = PetModel()
+                                        self.deleteCoffee = CoffeeModel()
                                     })
                                     Button("删除", role: .destructive, action: {
                                         showDelete = false
-                                        print("delete \(self.deletePet)")
-                                        self.viewModel.deletePet(petId: self.deletePet.id)
-                                        if let index = modelData.petList.firstIndex(of: deletePet){
+                                        print("delete \(self.deleteCoffee)")
+                                        self.viewModel.deleteCoffee(coffeeId: self.deleteCoffee.id)
+                                        if let index = modelData.coffeeList.firstIndex(of: deleteCoffee){
                                             withAnimation{
-                                                modelData.petList.remove(at: index)
+                                                modelData.coffeeList.remove(at: index)
                                             }
                                         }
-                                        self.deletePet = PetModel()
+                                        self.deleteCoffee = CoffeeModel()
                                     })
                                 }, message: {
-                                    Text("本操作仅删除  \(deletePet.name)（\(FamilyModel.getModel(deletePet.family).cn)），不会删除与\(deletePet.name)相关联的爱宠说。")
+                                    Text("本操作将删除 \(deleteCoffee.name)。")
                                 })
                                 
-                                NavigationLink(destination: EditPetView(petInfo: pet), label:{
+                                NavigationLink(destination: EditCoffeeView(coffeeInfo: coffee), label:{
                                     Label("编辑", systemImage: "pencil")
                                         .foregroundStyle(.blue)
                                 })
@@ -82,11 +82,11 @@ struct PetListView: View {
                     }
                 }
             }
-            .onAppear(perform: modelData.getPetList)
+            .onAppear(perform: modelData.getCoffeeList)
     }
 }
 
 #Preview {
-    PetListView()
+    CoffeeListView()
         .environmentObject(ModelData())
 }
